@@ -19,16 +19,18 @@ def get_songs(artist: str) -> List[Song]:
     html = urlopen(artist_url % (artist))
     bs = BeautifulSoup(html, 'html.parser')
     lyrics = []
+    songs_list = bs.find('ul', {'class': 'cnt-list-songs'})
 
-    for link in bs.find('ul', {'class': 'cnt-list-songs'}).find_all('a'):
-        if 'href' in link.attrs:
-            song_name = link.find('span').getText().strip()
-            
-            print(song_name)
+    if songs_list:
+        for link in songs_list.find_all('a'):
+            if 'href' in link.attrs:
+                song_name = link.find('span').getText().strip()
+                
+                print(f'{len(lyrics) + 1} - {song_name}')
 
-            verses = get_page_verses(link.attrs['href'])
+                verses = get_page_verses(link.attrs['href'])
 
-            lyrics.append(Song(song_name, verses))
+                lyrics.append(Song(song_name, verses))
 
     return lyrics
 
@@ -37,14 +39,16 @@ def get_page_verses(page) -> List[str]:
     html = urlopen(f"{base_url}/{page}")
     bs = BeautifulSoup(html, 'html.parser')
     verses = []
+    song_verses = bs.find('div', {'class': 'cnt-letra p402_premium'})
 
-    for verse in bs.find('div', {'class': 'cnt-letra p402_premium'}).find_all('p'):
-        p_removed = re.sub(r'(<p>)|(</p>)', "", str(verse))
-        br_removed = re.sub(r'<[^<]*br[^>]*>', "\n", p_removed).strip()
-        
-        for v in br_removed.split("\n"):
-            if len(v.split()) > 0:
-                verses.append(v)
+    if song_verses:
+        for verse in song_verses.find_all('p'):
+            p_removed = re.sub(r'(<p>)|(</p>)', "", str(verse))
+            br_removed = re.sub(r'<[^<]*br[^>]*>', "\n", p_removed).strip()
+            
+            for v in br_removed.split("\n"):
+                if len(v.split()) > 0:
+                    verses.append(v)
     
     return verses
 
