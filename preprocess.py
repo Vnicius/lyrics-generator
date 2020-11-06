@@ -23,6 +23,6 @@ if __name__ == '__main__':
                 lyrics = ""
                 for v in d['verses']:
                     if len(v.strip()) > 0:
-                        lyrics += preprocess_lyric(v) + " \\n "
+                        lyrics += preprocess_lyric(v) + " # "
                 
                 out_file.write(lyrics.strip() + "\n")
