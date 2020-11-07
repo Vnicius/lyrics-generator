@@ -11,18 +11,21 @@ def preprocess_lyric(lyric: str) -> str:
 
 if __name__ == '__main__':
     parser =  argparse.ArgumentParser()
-    parser.add_argument('json_file', help='JSON file from scrapper', type=str)
-    parser.add_argument('out_file', help='Output file', type=str)
+    parser.add_argument('-f','--files', help='JSON files from scraper', type=str, nargs='+', required=True)
+    parser.add_argument('-o','--output', help='Output file', type=str, required=True)
     args = parser.parse_args()
 
-    with open(args.json_file, 'r', encoding='utf-8') as file:
-        data = json.load(file)
+    with open(args.output, 'w', encoding='utf-8') as out_file:
+        
+        for file_name in args.files:
+            with open(file_name, 'r', encoding='utf-8') as file:
+                data = json.load(file)
 
-        with open(args.out_file, 'w', encoding='utf-8') as out_file:
-            for d in data:
-                lyrics = ""
-                for v in d['verses']:
-                    if len(v.strip()) > 0:
-                        lyrics += preprocess_lyric(v) + " # "
-                
-                out_file.write(lyrics.strip() + "\n")
+                for d in data:
+                    lyrics = ""
+                    for v in d['verses']:
+                        if len(v.strip()) > 0:
+                            lyrics += preprocess_lyric(v) + " # "
+                    
+                    if len(lyrics.strip()) > 0:
+                        out_file.write(lyrics.strip() + "\n")
