@@ -27,7 +27,7 @@ The output file will be `ARTIST.json`.
 You can preprocess the data using the provided script.
 
 ```
-    $ python preprocess.py ARTIST.json output.txt
+    $ python preprocess.py -f ARTIST.json ARTIST2.json -o output.txt
 ```
 
 ## Train and use example
